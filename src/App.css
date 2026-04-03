@@ -1,38 +1,152 @@
-.App {
-  text-align: center;
+@import url('https://cdn.jsdelivr.net/gh/orioncactus/pretendard@v1.3.9/dist/web/static/pretendard.min.css');
+
+* { box-sizing: border-box; margin: 0; padding: 0; font-family: 'Pretendard', -apple-system, BlinkMacSystemFont, system-ui, sans-serif; }
+
+body {
+  display: flex; justify-content: center; align-items: center;
+  height: 100vh; background-color: #E8EEF3; overflow: hidden;
 }
 
-.App-logo {
-  height: 40vmin;
+/* ── 태블릿 프레임 ── */
+#tablet-frame {
+  width: 100vw; height: 100vh;
+  background-color: #fff;
+  position: relative; overflow: hidden;
+}
+
+/* ══════════════════════════════════════
+   1. 인트로
+══════════════════════════════════════ */
+.intro-overlay {
+  position: absolute; inset: 0;
+  background: linear-gradient(to top, rgba(25,31,40,0.9) 0%, rgba(25,31,40,0) 50%);
+  cursor: pointer;
+  animation: fadeIn 0.5s ease;
+}
+
+.intro-character {
+  position: absolute; bottom: -7.5vh; left: 1vw;
+  width: 40vw; height: auto;
+  filter: drop-shadow(0 1.7vh 2.5vh rgba(0,0,0,0.3));
+  animation: slideUp 0.8s ease-out;
+  z-index: 1;
+}
+
+.intro-dialog {
+  position: absolute; bottom: 0; left: 0; right: 0;
+  background: rgba(36,38,45,0.75); color: #fff;
+  padding: 3.5% 0 3.5% 41vw;
+  font-size: 2.75vw; font-weight: 300; line-height: 140%;
+  box-shadow: 0 1.7vh 3.3vh rgba(0,0,0,0.3);
+  animation: slideUp 1s ease-out;
+}
+
+/* ══════════════════════════════════════
+   2. 지도
+══════════════════════════════════════ */
+.map-container {
+  position: absolute; inset: 0;
+  background-size: cover; background-position: center;
+}
+
+.map-marker {
+  position: absolute; top: 62%; left: 12%;
+  width: 6.25vw; height: 6.25vw;
+  background: rgba(255,217,61,0.3); border: 0.21vw solid #FFD93D;
+  border-radius: 50%; cursor: pointer;
+  animation: pulseRing 1.5s infinite;
+}
+
+/* ══════════════════════════════════════
+   3. 미션
+══════════════════════════════════════ */
+.mission-overlay {
+  position: absolute; inset: 0;
+  display: flex; justify-content: center; align-items: center;
+  background: rgba(0,0,0,0.6);
+  animation: fadeIn 0.8s ease;
+  backdrop-filter: blur(5px);
+}
+
+.mission-sign {
+  position: absolute; left: 5vw; top: 55%; transform: translateY(-50%);
+  width: 22vw; object-fit: contain;
+  filter: drop-shadow(0 2.5vh 4.2vh rgba(0,0,0,0.4));
+}
+
+.mission-content {
+  position: absolute; top: 45%; transform: translateY(-50%);
+  display: flex; flex-direction: column; align-items: center; gap: 7.5vh;
+  margin-left: 20vw;
+}
+
+.guide-bubble {
+  display: flex; align-items: end; gap: 2vw;
+}
+
+.guide-bubble img {
+  width: 10vw; height: 10vw;
+  border-radius: 50%; object-fit: cover; object-position: top center;
+  flex-shrink: 0;
+  background: rgba(44,81,190);
+  box-shadow: 0 0.5vh 1.5vh rgba(0,0,0,0.3);
+}
+
+.guide-bubble span {
+  background: rgba(44,81,190,0.75);
+  padding: 2vw 5vw; border-radius: 2vw 2vw 2vw 0.4vw;
+  font-size: 3vw; font-weight: 400; color: #fff;
+  box-shadow: 0 1.67vh 3.33vh rgba(0,0,0,0.3);
+  word-spacing: 1vw;
+}
+
+.word-choices {
+  display: grid; grid-template-columns: repeat(3, 1fr); gap: 2vw; justify-items: center;
+}
+
+.word-chip {
+  background: rgba(255,255,255,0.1); border: 0.1vw solid rgba(44,81,190);
+  color: #fff; padding: 0.5vw 2vw; border-radius: 20vw;
+  font-size: 2.25vw; font-weight: 800; cursor: grab; touch-action: none;
+  box-shadow: 0 0.5vh 1.5vh rgba(0,0,0,0.45);
+  transition: transform 0.2s, opacity 0.2s;
+}
+.word-chip:active { cursor: grabbing; transform: scale(0.95); }
+.word-chip.used {
+  opacity: 0.35; cursor: default;
+  filter: grayscale(1);
+  border: 0.1vw solid rgba(255,255,255,0.5);
   pointer-events: none;
 }
 
-@media (prefers-reduced-motion: no-preference) {
-  .App-logo {
-    animation: App-logo-spin infinite 20s linear;
-  }
+.answer-sentence {
+  display: flex; align-items: center; gap: 1vw; flex-wrap: wrap; justify-content: center;
+  font-size: 2.4vw; font-weight: 900; color: #fff;
+  text-shadow: 0 0.33vh 0.83vh rgba(0,0,0,0.5);
 }
 
-.App-header {
-  background-color: #282c34;
-  min-height: 100vh;
-  display: flex;
-  flex-direction: column;
-  align-items: center;
-  justify-content: center;
-  font-size: calc(10px + 2vmin);
-  color: white;
+.answer-slot {
+  min-width: 9.4vw; height: 6.7vh; padding: 0.5vw 2vw;
+  background: rgba(0,0,0,0.1); border: 0.1vw solid rgba(44,81,190);
+  border-radius: 2.08vw;
+  display: flex; justify-content: center; align-items: center;
+  font-size: 2.25vw; font-weight: 700; color: rgba(255,255,255,0.5);
+  transition: all 0.3s;
+}
+.answer-slot.filled {
+  background: #fff; border: none; color: #191F28;
+  font-size: 2.25vw; font-weight: 900;
+  box-shadow: 0 0.83vh 1.67vh rgba(0,0,0,0.3); text-shadow: none;
+}
+.answer-slot.shake {
+  animation: shake 0.3s ease;
 }
 
-.App-link {
-  color: #61dafb;
-}
 
-@keyframes App-logo-spin {
-  from {
-    transform: rotate(0deg);
-  }
-  to {
-    transform: rotate(360deg);
-  }
-}
+/* ══════════════════════════════════════
+   애니메이션
+══════════════════════════════════════ */
+@keyframes fadeIn    { from { opacity: 0; } to { opacity: 1; } }
+@keyframes slideUp   { from { transform: translateY(5vh); opacity: 0; } to { transform: translateY(0); opacity: 1; } }
+@keyframes pulseRing { 0% { box-shadow: 0 0 0 0 rgba(255,217,61,0.7); } 70% { box-shadow: 0 0 0 2.08vw rgba(255,217,61,0); } 100% { box-shadow: 0 0 0 0 rgba(255,217,61,0); } }
+@keyframes shake     { 0% { transform: translateX(0); } 25% { transform: translateX(-0.52vw); } 75% { transform: translateX(0.52vw); } 100% { transform: translateX(0); } }

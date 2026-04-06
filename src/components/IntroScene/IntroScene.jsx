@@ -4,8 +4,6 @@ import sprite from '../../assets/woman-sprite.webp';
 const TOTAL_FRAMES = 121;
 const COLS         = 11;
 const ROWS         = 11;
-const FW           = 480;
-const FH           = 270;
 const FPS          = 30;
 
 function IntroScene({ onComplete }) {

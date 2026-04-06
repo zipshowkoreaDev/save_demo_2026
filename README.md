@@ -75,8 +75,8 @@ ffmpeg이 필요합니다.
 # ffmpeg 설치 (WSL/Ubuntu)
 sudo apt install ffmpeg
 
-# 영상 생성
-ffmpeg -r 30 -i src/assets/woman-compressed/woman-%04d.webp -c:v libvpx-vp9 -b:v 0 -crf 20 -an public/character.webm
+# 영상 생성 (투명 배경 유지)
+ffmpeg -r 30 -i src/assets/woman-compressed/woman-%04d.webp -c:v libvpx-vp9 -pix_fmt yuva420p -b:v 0 -crf 20 -an public/character.webm
 ```
 
 ---

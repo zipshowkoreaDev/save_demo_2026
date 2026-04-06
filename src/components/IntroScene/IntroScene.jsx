@@ -27,7 +27,7 @@ function IntroScene({ onComplete }) {
         className="intro-character"
         style={{
           backgroundImage:    `url(${sprite})`,
-          backgroundSize:     `${COLS * 100}% auto`,
+          backgroundSize:     `${COLS * 100}% ${ROWS * 100}%`,
           backgroundPosition: `${(col / (COLS - 1)) * 100}% ${(row / (ROWS - 1)) * 100}%`,
           backgroundRepeat:   'no-repeat',
         }}

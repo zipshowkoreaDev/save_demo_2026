@@ -1,38 +1,13 @@
-import { useState, useEffect, useRef } from 'react';
-import sprite from '../../assets/woman-sprite.webp';
-
-const TOTAL_FRAMES = 121;
-const COLS         = 11;
-const ROWS         = 11;
-const FPS          = 30;
-
 function IntroScene({ onComplete }) {
-  const [frameIndex, setFrameIndex] = useState(0);
-  const intervalRef = useRef(null);
-
-  useEffect(() => {
-    intervalRef.current = setInterval(() => {
-      setFrameIndex(prev => (prev + 1) % TOTAL_FRAMES);
-    }, 1000 / FPS);
-
-    return () => clearInterval(intervalRef.current);
-  }, []);
-
-  const col = frameIndex % COLS;
-  const row = Math.floor(frameIndex / COLS);
-
   return (
     <div className="intro-overlay" onClick={onComplete}>
-      <div
+      <video
         className="intro-character"
-        style={{
-          backgroundImage:    `url(${sprite})`,
-          backgroundSize:     `${COLS * 100}% ${ROWS * 100}%`,
-          backgroundPosition: `${(col / (COLS - 1)) * 100}% ${(row / (ROWS - 1)) * 100}%`,
-          backgroundRepeat:   'no-repeat',
-        }}
-        role="img"
-        aria-label="인사하는 배움이"
+        src="/character.webm"
+        autoPlay
+        loop
+        muted
+        playsInline
       />
       <div className="intro-dialog">
         우리 동네 지도를 탐험해보세요.<br />

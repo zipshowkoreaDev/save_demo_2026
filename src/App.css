@@ -25,10 +25,11 @@ body {
 }
 
 .intro-character {
-  position: absolute; bottom: -7.5vh; left: 1vw;
-  width: 40vw; height: auto;
+  position: absolute; bottom: -7.5vh; right: 30vw;
+  width: auto; height: 85vh;
   filter: drop-shadow(0 1.7vh 2.5vh rgba(0,0,0,0.3));
-  animation: slideUp 0.8s ease-out;
+  animation: slideUpFlipped 0.8s ease-out;
+  transform: scaleX(-1);
   z-index: 1;
 }
 
@@ -147,6 +148,7 @@ body {
    애니메이션
 ══════════════════════════════════════ */
 @keyframes fadeIn    { from { opacity: 0; } to { opacity: 1; } }
-@keyframes slideUp   { from { transform: translateY(5vh); opacity: 0; } to { transform: translateY(0); opacity: 1; } }
+@keyframes slideUp        { from { transform: translateY(5vh); opacity: 0; } to { transform: translateY(0); opacity: 1; } }
+@keyframes slideUpFlipped { from { transform: translateY(5vh) scaleX(-1); opacity: 0; } to { transform: translateY(0) scaleX(-1); opacity: 1; } }
 @keyframes pulseRing { 0% { box-shadow: 0 0 0 0 rgba(255,217,61,0.7); } 70% { box-shadow: 0 0 0 2.08vw rgba(255,217,61,0); } 100% { box-shadow: 0 0 0 0 rgba(255,217,61,0); } }
 @keyframes shake     { 0% { transform: translateX(0); } 25% { transform: translateX(-0.52vw); } 75% { transform: translateX(0.52vw); } 100% { transform: translateX(0); } }

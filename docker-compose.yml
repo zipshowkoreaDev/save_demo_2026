@@ -1,0 +1,30 @@
+services:
+  app:
+    build:
+      context: .
+      dockerfile: Dockerfile
+    ports:
+      - "4840:3000"
+    networks:
+      - app
+    restart: always
+    # 리소스 제한 설정 (다른 프로젝트와 공존)
+    deploy:
+      resources:
+        limits:
+          cpus: '1.0'      # CPU 1코어로 제한
+          memory: 1G       # 메모리 1GB로 제한
+        reservations:
+          cpus: '0.5'      # 최소 0.5코어 보장
+          memory: 512M     # 최소 512MB 보장
+    # 로그 크기 제한
+    logging:
+      driver: "json-file"
+      options:
+        max-size: "10m"
+        max-file: "3"
+
+networks:
+  app:
+    external: true
+    name: app

@@ -1,4 +1,4 @@
-import { useState, useRef, Fragment } from 'react';
+import { useState, useRef, Fragment, useEffect } from 'react';
 import characterGreeting from '../../assets/character-smile.png';
 import missionSign from '../../assets/sign-construction.png';
 
@@ -24,20 +24,24 @@ function MissionScene({ onComplete }) {
   const [filled, setFilled]   = useState({});
   const [used, setUsed]     = useState({});
   const [shaking, setShaking] = useState({});
-  const correctCount = useRef(0);
-  const draggedVal   = useRef(null);
-  const touchClone   = useRef(null);
+  const correctCount   = useRef(0);
+  const draggedVal     = useRef(null);
+  const touchClone     = useRef(null);
+  const wordChoicesRef = useRef(null);
+  const usedRef        = useRef(used);
+  const filledRef      = useRef(filled);
+  useEffect(() => { usedRef.current   = used;   }, [used]);
+  useEffect(() => { filledRef.current = filled; }, [filled]);
 
   /* ── 공통 drop 처리 ── */
   function drop(zoneId, answer) {
     const val = draggedVal.current;
-    if (!val || filled[zoneId]) return;
+    if (!val || filledRef.current[zoneId]) return;
 
     if (val === answer) {
       setFilled(prev => ({ ...prev, [zoneId]: val }));
       setUsed(prev => ({ ...prev, [val]: true }));
       correctCount.current += 1;
-      if (correctCount.current === DROP_ZONES.length) setTimeout(onComplete, 800);
     } else {
       setShaking(prev => ({ ...prev, [zoneId]: true }));
       setTimeout(() => setShaking(prev => ({ ...prev, [zoneId]: false })), 300);
@@ -45,57 +49,70 @@ function MissionScene({ onComplete }) {
     draggedVal.current = null;
   }
 
+  const dropRef = useRef(drop);
+  useEffect(() => { dropRef.current = drop; });
+
   /* ── 마우스 드래그 ── */
   function handleDragStart(val) { draggedVal.current = val; }
 
-  /* ── 터치 드래그 ── */
-  function handleTouchStart(e, val) {
-    if (used[val]) return;
-    e.preventDefault();
-    draggedVal.current = val;
+  /* ── 터치 드래그 (non-passive) ── */
+  useEffect(() => {
+    const container = wordChoicesRef.current;
+    if (!container) return;
 
-    const touch = e.touches[0];
-    const rect  = e.currentTarget.getBoundingClientRect();
-    const clone = e.currentTarget.cloneNode(true);
+    function onTouchStart(e) {
+      const chip = e.target.closest('[data-word]');
+      if (!chip) return;
+      const val = chip.dataset.word;
+      if (usedRef.current[val]) return;
+      e.preventDefault();
+      draggedVal.current = val;
 
-    Object.assign(clone.style, {
-      position:      'fixed',
-      pointerEvents: 'none',
-      opacity:       '0.85',
-      zIndex:        '9999',
-      margin:        '0',
-      left:          touch.clientX - rect.width  / 2 + 'px',
-      top:           touch.clientY - rect.height / 2 + 'px',
-      width:         rect.width  + 'px',
-    });
-
-    document.body.appendChild(clone);
-    touchClone.current = clone;
-  }
-
-  function handleTouchMove(e) {
-    e.preventDefault();
-    if (!touchClone.current) return;
-    const touch  = e.touches[0];
-    const clone  = touchClone.current;
-    clone.style.left = touch.clientX - clone.offsetWidth  / 2 + 'px';
-    clone.style.top  = touch.clientY - clone.offsetHeight / 2 + 'px';
-  }
-
-  function handleTouchEnd(e) {
-    e.preventDefault();
-    if (touchClone.current) {
-      document.body.removeChild(touchClone.current);
-      touchClone.current = null;
+      const touch = e.touches[0];
+      const rect  = chip.getBoundingClientRect();
+      const clone = chip.cloneNode(true);
+      Object.assign(clone.style, {
+        position: 'fixed', pointerEvents: 'none', opacity: '0.85',
+        zIndex: '9999', margin: '0',
+        left: touch.clientX - rect.width  / 2 + 'px',
+        top:  touch.clientY - rect.height / 2 + 'px',
+        width: rect.width + 'px',
+      });
+      document.body.appendChild(clone);
+      touchClone.current = clone;
     }
 
-    const touch = e.changedTouches[0];
-    const el    = document.elementFromPoint(touch.clientX, touch.clientY);
-    if (!el) return;
+    function onTouchMove(e) {
+      e.preventDefault();
+      if (!touchClone.current) return;
+      const touch = e.touches[0];
+      touchClone.current.style.left = touch.clientX - touchClone.current.offsetWidth  / 2 + 'px';
+      touchClone.current.style.top  = touch.clientY - touchClone.current.offsetHeight / 2 + 'px';
+    }
 
-    const zone = el.closest('[data-zone-id]');
-    if (zone) drop(zone.dataset.zoneId, zone.dataset.answer);
-  }
+    function onTouchEnd(e) {
+      e.preventDefault();
+      if (touchClone.current) {
+        document.body.removeChild(touchClone.current);
+        touchClone.current = null;
+      }
+      const touch = e.changedTouches[0];
+      const target = document.elementFromPoint(touch.clientX, touch.clientY);
+      if (!target) return;
+      const zone = target.closest('[data-zone-id]');
+      if (zone) dropRef.current(zone.dataset.zoneId, zone.dataset.answer);
+    }
+
+    container.addEventListener('touchstart', onTouchStart, { passive: false });
+    container.addEventListener('touchmove',  onTouchMove,  { passive: false });
+    container.addEventListener('touchend',   onTouchEnd,   { passive: false });
+
+    return () => {
+      container.removeEventListener('touchstart', onTouchStart);
+      container.removeEventListener('touchmove',  onTouchMove);
+      container.removeEventListener('touchend',   onTouchEnd);
+    };
+  }, []);
 
   return (
     <div className="mission-overlay">
@@ -107,16 +124,14 @@ function MissionScene({ onComplete }) {
           <span>이 표지판이 무엇인지 맞춰보세요!</span>
         </div>
 
-        <div className="word-choices">
+        <div className="word-choices" ref={wordChoicesRef}>
           {WORDS.map(word => (
             <div
               key={word}
               className={`word-chip${used[word] ? ' used' : ''}`}
               draggable={!used[word]}
+              data-word={word}
               onDragStart={() => handleDragStart(word)}
-              onTouchStart={e => handleTouchStart(e, word)}
-              onTouchMove={handleTouchMove}
-              onTouchEnd={handleTouchEnd}
             >
               {word}
             </div>

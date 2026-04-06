@@ -1,0 +1,9 @@
+{
+  "short_name": "안전 표지판",
+  "name": "안전 표지판 마을 탐험",
+  "icons": [],
+  "start_url": ".",
+  "display": "standalone",
+  "theme_color": "#000000",
+  "background_color": "#ffffff"
+}

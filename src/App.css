@@ -27,8 +27,10 @@ body {
 }
 
 .intro-character {
-  position: absolute; bottom: -7.5vh; right: 40vw;
-  width: auto; height: 75vh;
+  position: absolute; left: -20%; bottom: -7.5vh; transform: translateX(-50%);
+  height: 85vh;
+  width: calc(85vh * (16 / 9));
+  background-color: transparent;
   filter: drop-shadow(0 1.7vh 2.5vh rgba(0,0,0,0.3));
   animation: slideUpFlipped 0.8s ease-out;
   transform: scaleX(-1);
@@ -36,11 +38,21 @@ body {
 }
 /* 태블릿 (768px ~ 1024px) */
 @media (min-width: 768px) and (max-width: 1024px) {
-  .intro-character { height: 85vh; right: 30vw; bottom: -7.5vh; }
+  .intro-character {
+    height: 85vh;
+    width: calc(85vh * (16 / 9));
+    left: -20%; bottom: -7.5vh; transform: translateX(-50%);
+    transform: scaleX(-1);
+  }
 }
 /* 데스크탑 (1025px~) */
 @media (min-width: 1025px) {
-  .intro-character { height: 90vh; right: 40vw; bottom: -7.5vh; }
+  .intro-character {
+    height: 90vh;
+    width: calc(90vh * (16 / 9));
+    left: -30%; bottom: -7.5vh; transform: translateX(-50%);
+    transform: scaleX(-1);
+  }
 }
 
 .intro-dialog {

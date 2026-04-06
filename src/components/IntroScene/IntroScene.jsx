@@ -1,11 +1,12 @@
 import { useState, useEffect, useRef } from 'react';
+import sprite from '../../assets/woman-sprite.webp';
 
 const TOTAL_FRAMES = 121;
-const FPS = 30;
-
-const frames = Array.from({ length: TOTAL_FRAMES }, (_, i) =>
-  require(`../../assets/woman-compressed/woman-${String(i).padStart(4, '0')}.webp`)
-);
+const COLS         = 11;
+const ROWS         = 11;
+const FW           = 480;
+const FH           = 270;
+const FPS          = 30;
 
 function IntroScene({ onComplete }) {
   const [frameIndex, setFrameIndex] = useState(0);
@@ -19,12 +20,21 @@ function IntroScene({ onComplete }) {
     return () => clearInterval(intervalRef.current);
   }, []);
 
+  const col = frameIndex % COLS;
+  const row = Math.floor(frameIndex / COLS);
+
   return (
     <div className="intro-overlay" onClick={onComplete}>
-      <img
+      <div
         className="intro-character"
-        src={frames[frameIndex]}
-        alt="인사하는 배움이"
+        style={{
+          backgroundImage:    `url(${sprite})`,
+          backgroundSize:     `${COLS * 100}% auto`,
+          backgroundPosition: `${(col / (COLS - 1)) * 100}% ${(row / (ROWS - 1)) * 100}%`,
+          backgroundRepeat:   'no-repeat',
+        }}
+        role="img"
+        aria-label="인사하는 배움이"
       />
       <div className="intro-dialog">
         우리 동네 지도를 탐험해보세요.<br />

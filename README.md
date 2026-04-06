@@ -24,7 +24,7 @@
 - React 19 (Create React App)
 - 순수 CSS (vw/vh 기반 반응형)
 - HTML5 Drag & Drop API + Touch Events (터치 디바이스 대응)
-- WebM (VP9) 영상 애니메이션
+- Canvas API + WebP 프레임 시퀀스 애니메이션 (30fps, 투명 배경)
 - Pretendard 폰트
 
 ---
@@ -32,18 +32,15 @@
 ## 프로젝트 구조
 
 ```
-public/
-└── character.webm               # 인트로 캐릭터 영상 (VP9, 1920x1080, 30fps)
-
 src/
 ├── assets/
-│   ├── woman-compressed/        # 원본 프레임 시퀀스 (woman-0000.webp ~ woman-0120.webp, 121프레임)
+│   ├── woman-compressed/        # 인트로 캐릭터 프레임 시퀀스 (woman-0000.webp ~ woman-0120.webp, 121프레임)
 │   ├── character-smile.png      # 미션 가이드 캐릭터
 │   ├── sign-construction.png    # 공사장 표지판
 │   └── town-map.png             # 마을 지도 배경
 ├── components/
 │   ├── IntroScene/
-│   │   └── IntroScene.jsx       # WebM 영상 루프 재생
+│   │   └── IntroScene.jsx       # Canvas + WebP 프레임 시퀀스 애니메이션 (30fps, 투명 배경)
 │   ├── MapScene/
 │   │   └── MapScene.jsx
 │   └── MissionScene/
@@ -64,20 +61,6 @@ npm start
 
 브라우저에서 `http://localhost:3000` 접속
 
----
-
-## 캐릭터 영상 재생성
-
-원본 프레임 시퀀스(`src/assets/woman-compressed/`)로부터 WebM 영상을 생성합니다.
-ffmpeg이 필요합니다.
-
-```bash
-# ffmpeg 설치 (WSL/Ubuntu)
-sudo apt install ffmpeg
-
-# 영상 생성 (투명 배경 유지)
-ffmpeg -r 30 -i src/assets/woman-compressed/woman-%04d.webp -c:v libvpx-vp9 -pix_fmt yuva420p -b:v 0 -crf 20 -an public/character.webm
-```
 
 ---
 

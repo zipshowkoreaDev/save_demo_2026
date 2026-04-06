@@ -35,7 +35,6 @@ body {
   position: absolute; left: 20%; bottom: -7.5vh;
   height: 85vh;
   width: calc(85vh * (16 / 9));
-  object-fit: cover;
   filter: drop-shadow(0 1.7vh 2.5vh rgba(0,0,0,0.3));
   animation: slideUpFlipped 0.8s ease-out;
   transform: scaleX(-1) translateX(50%);

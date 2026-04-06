@@ -4,7 +4,7 @@ const TOTAL_FRAMES = 121;
 const FPS = 30;
 
 const frames = Array.from({ length: TOTAL_FRAMES }, (_, i) =>
-  require(`../../assets/woman_compressed/woman_${String(i).padStart(4, '0')}.webp`)
+  require(`../../assets/woman-compressed/woman-${String(i).padStart(4, '0')}.webp`)
 );
 
 function IntroScene({ onComplete }) {
